@@ -1,5 +1,6 @@
 package com.example.mycalculator
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -55,6 +56,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     fun onEqual(view: View) {
         if (isLastNumeric) {
             var tvValue = tvCalc?.text.toString()
@@ -64,6 +66,7 @@ class MainActivity : AppCompatActivity() {
                     prefix = "-"
                     tvValue = tvValue.substring(1)
                 }
+
                 if (tvValue.contains("-")) {
                     val splitValue = tvValue.split("-")
                     var one = splitValue[0]
@@ -72,13 +75,47 @@ class MainActivity : AppCompatActivity() {
                     if (prefix.isNotEmpty()) {
                         one = prefix + one
                     }
+                    tvCalc?.text = removeZeroAfterDot((one.toDouble() - two.toDouble()).toString())
+                } else if (tvValue.contains("+")) {
+                    val splitValue = tvValue.split("+")
+                    var one = splitValue[0]
+                    var two = splitValue[1]
 
-                     tvCalc?.text = (one.toDouble() - two.toDouble()).toString()
+                    if (prefix.isNotEmpty()) {
+                        one = prefix + one
+                    }
+                    tvCalc?.text = removeZeroAfterDot((one.toDouble() + two.toDouble()).toString())
+                } else if (tvValue.contains("/")) {
+                    val splitValue = tvValue.split("/")
+                    var one = splitValue[0]
+                    var two = splitValue[1]
+
+                    if (prefix.isNotEmpty()) {
+                        one = prefix + one
+                    }
+                    tvCalc?.text = removeZeroAfterDot((one.toDouble() / two.toDouble()).toString())
+                } else if (tvValue.contains("*")) {
+                    val splitValue = tvValue.split("*")
+                    var one = splitValue[0]
+                    var two = splitValue[1]
+
+                    if (prefix.isNotEmpty()) {
+                        one = prefix + one
+                    }
+                    tvCalc?.text = removeZeroAfterDot((one.toDouble() * two.toDouble()).toString())
                 }
             } catch (e: ArithmeticException) {
                 e.printStackTrace()
             }
         }
+    }
+
+    private fun removeZeroAfterDot(value: String): String {
+        var result = value
+        if (value.contains(".0"))
+            result = value.substring(0, value.length - 2)
+
+        return result
     }
 
     fun onClear(view: View) {
